@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+
+    <link href="https://fonts.googleapis.com/css?family=Questrial" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" integrity="sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+    <title>Have Fun!</title>
+
+    <style>
+      .ui-helper-hidden-accessible {
+        display: none;
+      }
+      /* searchSuggest can be used defind the style of the autocomplete style */
+      .searchSuggest {
+        background-color:white;
+      }
+    </style>
+
+    <link rel="stylesheet" href="css/style.css">
+   
+  </head>
+  <body>
+
+    <div class="headerHold">
+        <div class="header">HYPE</div>
+    </div>
+
+    <img src="images/speaker.png" alt="" id="leftIcon">
+
+    <img src="images/speaker.png" alt="" id="rightIcon">
+
+  <div class="container">
+
+    <form>
+
+      <input type="text" id="music-input" class="form-control form-control-lg songInput" placeholder="Enter Song Name">
+
+    </form>
+
+    <div class="row songDivHolder">
+
+      <div class="row songDiv"></div>
+
+    </div>
+
+  </div>
+
+    <script
+      src="https://code.jquery.com/jquery-3.3.1.min.js"
+      integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+      let data = "";
+      let at;
+      let input = $("#music-input").val();
+      // * this function will run as soon as script loaded.
+      // * data is a array. a list of track. FRONTEND
+      // * at means access token. coming from backend database table token
+      (function() {
+        $.get("/api/guest", function(response) {
+          data = response.data;
+          at = response.token[0].accessToken;
+          console.log(response);
+          console.log(data);
+          console.log(at);
+          for (var i = 0; i < data.length; i++) {
+            var music = $("<div class='song col-lg-10'>" + data[i].song + " by " + data[i].artist  +"</div>" + "<div class = 'col-lg-1'><i class='fas fa-thumbs-up thumbsUp' data-action='thumbup' data-id=" + data[i].id + "></i></div>" + "<div class = 'col-lg-1'><i class='fas fa-thumbs-down thumbsDown' data-action='thumbdown' data-id=" + data[i].id + "></i></div>");
+            $(".songDiv").append(music);
+          
+          }
+        });
+      })();
+      // Autocomplete. when guest input more than 3 characters , the function will be fired.
+      //function input{access token}(coming from the /api/guest) and {query term}
+      $("#music-input").autocomplete({
+        source: function(request, response) {
+          $.ajax({
+            type: "GET",
+            url: "https://api.spotify.com/v1/search",
+            headers: {
+              Authorization: `Bearer ${at}`,
+              Accept: "application/json",
+              "Content-Type": "application/json"
+            },
+            data: {
+              type: "track",
+              q: request.term,
+              limit: 10,
+              market: "US",
+              offset: 3
+            },
+            success: function(data) {
+              console.log(data.tracks.items);
+              response(
+                $.map(data.tracks.items, function(item) {
+                  // console.log(item.artists);
+                  return {
+                    lable: `${item.name} by ${item.artists[0].name}`,
+                    value: `${item.name} by ${item.artists[0].name}`,
+                    id: item.id,
+                    meta_name: `${item.name}`,
+                    meta_uri: `${item.uri}`,
+                    meta_artist: `${item.artists[0].name}`
+                  };
+                })
+              );
+            }
+          });
+        },
+        minLength: 3,
+        select: function(event, ui) {
+          $("#music-input").val(ui.item.value);
+          // console.log(ui.item.meta_uri);
+          let meta_data = {
+            name: ui.item.meta_name,
+            artist: ui.item.meta_artist,
+            uri: ui.item.meta_uri
+          };
+          console.log(meta_data);
+          (function() {
+            console.log("111111");
+          })();
+          $.post("/music/add", meta_data).then(function(meta_data) {
+            console.log("new music added" + meta_data);
+          });
+        }
+      });
+      $.ui.autocomplete.prototype._renderItem = function(ul, item) {
+        console.log(item);
+        return $("<div class='searchResults'>")
+          .addClass("searchSuggest")
+          .text(`${item.lable}`)
+          .appendTo(ul);
+      };
+      var songVote = function() {
+        var Action = $(this).data("action");
+        var id = $(this).data("id");
+        console.log(Action);
+        console.log(id);
+        var songClick = $(this);
+        console.log(songClick);
+        var disableSong = function(song) {
+          song.hide();
+          song.text("1");
+        };
+        $.get("/api/" + Action + "/" + id, function(data) {
+          return;
+        }).then(disableSong(songClick));
+      };
+      $(document).on("click", ".fas", songVote);
+        
+      //tracking info
+    </script>
+
+  </body>
+</html>

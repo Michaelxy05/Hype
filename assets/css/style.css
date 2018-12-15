@@ -1,0 +1,87 @@
+@font-face {
+    font-family: mapleOrigins;
+    src: url(mapleOrigins.ttf);
+}
+
+body {
+
+    background-image: url("../images/background.jpg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
+}
+
+.headerHold {
+
+    height: 28vh;
+    margin-bottom: 10vh;
+}
+
+.header {
+
+    font-family: mapleOrigins;
+    /* font-weight: bold; */
+    font-size: 25vh;
+    color: white;
+    text-align: center;
+    animation: bounce .7s infinite;
+}
+
+@keyframes bounce {
+    0%   {font-size: 25vh}
+    50%  {font-size: 26vh}
+    100% {font-size: 25vh}
+}
+
+#leftIcon {
+
+    position: absolute;
+    left: 15vw;
+    top: 8vh;
+    width: 10vw;
+    animation: bounceSpeaker .7s infinite;
+}
+
+#rightIcon {
+
+    position: absolute;
+    right: 15vw;
+    top: 8vh;
+    width: 10vw;
+    animation: bounceSpeaker .7s infinite;
+}
+
+@keyframes bounceSpeaker {
+    0%   {width: 10vw}
+    50%  {width: 11vw}
+    100% {width: 10vw}
+}
+
+
+.player {
+
+    background: rgb(0,0,0);
+    background: linear-gradient(164deg, rgba(0,0,0,1) 0%, rgba(41,39,39,1) 100%);
+    border-radius: 10px;
+    min-height: 10vh;
+    color: white;
+    margin-bottom: 5vh;
+}
+
+#playBtn {
+
+    width: 10%;
+    height: 10%;
+    margin-left: 25vw;
+}
+
+.songList {
+
+    background: rgb(0,0,0);
+    background: linear-gradient(164deg, rgba(0,0,0,1) 0%, rgba(41,39,39,1) 100%);
+    border-radius: 10px;
+    min-height: 90vh;
+    color: white;
+    margin-bottom: 5vh;
+}
