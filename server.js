@@ -4,7 +4,7 @@ const cookieParser = require("cookie-parser");
 const db = require("./models");
 const app = express();
 const exphbs = require("express-handlebars");
-var PORT = process.env.PORT || 80;
+var PORT = process.env.PORT || 10010;
 
 // Middleware
 app

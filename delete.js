@@ -56,8 +56,8 @@ function handleDeleteSpotify(spotifyID) {
     
         }
     }).then(function(data) {
-        trackURI = "{ tracks: [{" + data.uri + "}]}";
-        
+        trackURI = "{ tracks: [{ uri:" + data.uri + "}]}";
+            //{ "tracks": [{ "uri": "spotify:track:4iV5W9uYEdYUVa79Axb7Rh" }]}
         console.log("This is the 0000000000000000000000000000000000000000" + trackURI);
         //const spotify = this.authorizeSpotify(Token);
         db.Token.findOne({

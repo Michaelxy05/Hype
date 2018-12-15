@@ -45,22 +45,45 @@ function refreshSpotifyToken() {
     .catch(function(error) {});
 }
 
+function deleteFromSpotify(songId) {
+  let spotifyPlaylistId;
+  let spotifyAccessToken;
+  db.Token.findOne({ where: { id: 1 } }).then(data => {
+    spotifyPlaylistId = data.playlistId;
+    spotifyAccessToken = data.accessToken;
+    fetch(`https://api.spotify.com/v1/playlists/${spotifyPlaylistId}/tracks`, {
+      method: "DELETE",
+      body: songId,
+      headers: {
+        Authorization: `Bearer ${spotifyAccessToken}`,
+        "Content-Type": "application/json"
+      }
+    })
+      .then(response => response.json())
+      .then(data => console.log(data))
+      .catch(err => console.log(err));
+  });
+}
+
+function deleteFromDatabase(db_id) {
+  let uri;
+  db.Playlist.findOne({ where: { id: db_id } })
+    .then(data => {
+      uri = JSON.stringify({ tracks: [{ uri: data.uri }] });
+      if (data.downcount < downTrigger) {
+        return;
+      }
+      db.Playlist.destroy({ where: { id: db_id } }).then(() => {
+        databaseDeletedSongId.push(parseInt(data.id));
+      });
+
+      deleteFromSpotify(uri);
+    })
+    .catch(err => {
+      console.log(err);
+    });
+}
 module.exports = function(app) {
-  // Token Kamakshi's way with useid and token deleted
-  // *************kamakshi1******************
-  // Create a new example
-  //   app.post("/api/token", function (req, res) {
-  //     var userid = req.body.userid || {deleted}
-  //     var token = req.body.token || {deleted}
-  //     spotify
-  //       .request('https://api.spotify.com/v1/users/' + userid + '/playlists')
-  //       .then(function (data) {
-  //         res.json(data);
-  //         console.log(data);
-  //       })
-  //       .catch(function (err) {
-  //         console.error('Error occurred: ' + err);
-  //       });
   // * Token Qi's way
   // * Store the token in database.
   // * Only the current token stored. Expired one always get updated.
@@ -110,13 +133,20 @@ module.exports = function(app) {
         }
       );
     } else {
-      db.Playlist.findOne({ where: { id: parseInt(req.params.id) } }).then(
-        song => {
-          return song.increment("downcount");
-
-        }
-      
-      ).then(functionTriggerDelete(db_id));
+      if (databaseDeletedSongId.indexOf(parseInt(db_id)) !== -1) {
+        return;
+      } else {
+        db.Playlist.findOne({ where: { id: parseInt(req.params.id) } })
+          .then(song => {
+            return song.increment("downcount");
+          })
+          .then(() => {
+            deleteFromDatabase(db_id);
+          })
+          .catch(err => {
+            throw new Error("ID not exist");
+          });
+      }
     }
   });
 
@@ -162,45 +192,51 @@ module.exports = function(app) {
   //by kamakshi to add song to playlist********************
   app.post("/music/add/", function(req, res) {
     //var addSong = req.body.burger_name;
-    console.log("I am hererrrrrrrrrrrr ");
+    // console.log(req.body);
+    let spotifyPlaylistId;
+    let spotifyAccessToken;
+    let spotifyArtistId;
+    let spotifyUri;
+    let spotifyTrackName;
 
-    //hard coding both song and playlistid. This needs to be posted from the front end
-    var song = req.body.song_name || "munbe";
-
-    var playListId = req.body.playlist_id || "6di09FQ7mgkzVwRssdeL6j";
-    user_id = req.body.spotify_user_id || "dloacqj8ljktv5c86ka0az6uw";
-    var selectedTrack = "";
-    fetch(`https://api.spotify.com/v1/search?q=${song}&type=track&limit=1`, {
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${at}`
+    var song = req.body.song_name;
+    db.Token.findOne({
+      where: {
+        id: 1
       }
-    })
-      .then(response => response.json())
-      .then(function(data) {
-        console.log("Track is" + data.tracks.items[0].uri);
-        selectedTrack = data.tracks.items[0].uri;
-        //  res.json(data.items);
-      });
+    }).then(data => {
+      //Play list id also should be sent in body
+      spotifyPlaylistId = data.playlistId;
+      spotifyAccessToken = data.accessToken;
+      var undef;
+      spotifyArtistId = req.body.artist;
+      spotifyUri = req.body.uri;
+      spotifyTrackName = req.body.name;
 
-    console.log("Play list is " + playListId);
-    console.log("Access Topken is " + at);
-    fetch(
-      `https://api.spotify.com/v1/playlists/${playListId}/tracks?uris=spotify:track:6vZj02bcQqLTYRAi4jRkw7`,
-      {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${at}`
-        }
+      if (spotifyTrackName !== undef) {
+        var url = `https://api.spotify.com/v1/playlists/${spotifyPlaylistId}/tracks?uris=${spotifyUri}`;
+        fetch(url, {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${spotifyAccessToken}`
+          }
+        })
+          .then(response => response.json())
+          .then(function(data) {
+            console.log("Added the track ********* " + data);
+            //  res.json(data.items);
+            db.Playlist.create({
+              song: spotifyTrackName,
+              uri: spotifyUri,
+              artist: spotifyArtistId
+            });
+            res.redirect("/guest.html");
+          });
+      } else {
+        res.redirect("/guest.html");
       }
-    )
-      .then(response => response.json())
-      .then(function(data) {
-        console.log("Added the track ********* " + data);
-        //  res.json(data.items);
-      });
+    });
   });
 };

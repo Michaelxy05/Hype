@@ -9,6 +9,15 @@
     "fix": "eslint --fix .",
     "test": "npm run lint && NODE_ENV=test mocha -u tdd --reporter spec --exit"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Epiphamatic/Project-2"
+  },
+  "author": "Tri Pham",
+  "bugs": {
+    "url": "https://github.com/Epiphamatic/Project-2/issues"
+  },
+  "homepage": "https://github.com/Epiphamatic/Project-2#readme",
   "license": "ISC",
   "dependencies": {
     "axios": "^0.18.0",

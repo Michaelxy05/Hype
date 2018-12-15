@@ -1,0 +1,312 @@
+@font-face {
+    font-family: mapleOrigins;
+    src: url(mapleOrigins.ttf);
+}
+
+body {
+
+    background-image: url("../images/background.jpg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
+    font-family: 'Questrial', sans-serif;
+}
+
+.headerHold {
+
+    height: 28vh;
+    margin-bottom: 15vh;
+}
+
+.header {
+
+    font-family: mapleOrigins;
+    /* font-weight: bold; */
+    font-size: 25vh;
+    color: white;
+    text-align: center;
+    animation: bounce .7s infinite;
+}
+
+@keyframes bounce {
+    0%   {font-size: 25vh}
+    50%  {font-size: 26vh}
+    100% {font-size: 25vh}
+}
+
+#leftIcon {
+
+    position: absolute;
+    left: 15vw;
+    top: 8vh;
+    width: 10vw;
+    animation: bounceSpeaker .7s infinite;
+}
+
+#rightIcon {
+
+    position: absolute;
+    right: 15vw;
+    top: 8vh;
+    width: 10vw;
+    animation: bounceSpeaker .7s infinite;
+}
+
+@keyframes bounceSpeaker {
+    0%   {width: 10vw}
+    50%  {width: 11vw}
+    100% {width: 10vw}
+}
+
+.songList {
+
+    background: rgb(0,0,0);
+    background: linear-gradient(164deg, rgba(0,0,0,1) 0%, rgba(41,39,39,1) 100%);
+    border-radius: 10px;
+    min-height: 90vh;
+    color: white;
+    margin-bottom: 5vh;
+}
+
+.loginBtn {
+
+    font-size: 15vh;
+}
+
+.centerText {
+    text-align: center;
+}
+
+.marginBottom {
+
+    margin-bottom: 15vh;
+}
+
+.chosenPlaylist {
+
+    font-family: 'Questrial', sans-serif;
+    font-size: 6vh;
+    margin-right: 3vw;
+    margin-bottom: 3vh;
+    width: 100%;
+
+}
+
+.granted {
+
+    text-align: center;
+}
+
+
+.accessHeader {
+
+    color: white;
+    font-size: 7vh;
+    margin-bottom: 5vh;
+}
+
+@media only screen and (max-width: 700px) {
+
+    .headerHold {
+
+        height: 15vh;
+        margin-bottom: 6vh;
+    }
+
+    .header {
+
+        font-family: mapleOrigins;
+        font-size: 13vh;
+        animation: none;
+    }
+
+    #leftIcon {
+
+        position: absolute;
+        left: 2vw;
+        top: 4vh;
+        width: 19vw;
+        animation: bounceSpeaker .7s infinite;
+    }
+    
+    #rightIcon {
+    
+        position: absolute;
+        right: 2vw;
+        top: 4vh;
+        width: 19vw;
+        animation: bounceSpeaker .7s infinite;
+    }
+    
+    @keyframes bounceSpeaker {
+        0%   {width: 19vw}
+        50%  {width: 20vw}
+        100% {width: 19vw}
+    }
+
+    .accessHeader {
+
+        color: white;
+        font-size: 5vh;
+        margin-bottom: 5vh;
+        font-weight: bold;
+    }
+
+    .loginBtn {
+
+        font-size: 8vh;
+    }
+
+    #grant {
+
+        margin-top: 25vh;
+    }
+}
+
+/* Guest.html page styling 
+------------------------------------------------------------------------------------------------------------------------
+*/
+
+.searchResults {
+
+    width: 72.3vw;
+    position: relative;
+    left: -2.6vw;
+    font-size: 3vh;
+    padding-left: 1vw;
+    border-bottom: solid 1px rgba(50, 156, 255, 0.863);
+    border-radius: 2px;
+}
+
+.searchResults:hover {
+
+    background: rgb(215, 242, 253);
+}
+
+.songInput {
+
+    margin-bottom: 3vh;
+    position: relative;
+    left: -2vw;
+}
+
+.songDivHolder {
+
+    text-align: center;
+    margin-bottom: 6vh;
+}
+
+.songDiv {
+
+    width: 100%;
+}
+
+.song {
+
+    color: black;
+    background: white;
+    margin-top: 2vh;
+    border-radius: 5px;
+    font-size: 5vh;
+    white-space: nowrap;
+}
+
+.thumbsUp {
+
+    color: white;
+    font-size: 6vh;
+    margin-top: 2vh;
+    line-height: 100%;
+}
+
+.thumbsUp:hover {
+
+    color: rgb(48, 240, 64);
+
+}
+
+.thumbsUp:active {
+
+    color: rgba(72, 248, 87, 0.671);
+
+}
+
+
+.thumbsDown {
+
+    color: white;
+    font-size: 6vh;
+    margin-top: 2vh;
+    line-height: 140%;
+}
+
+.thumbsDown:hover {
+
+    color: rgb(214, 35, 35);
+
+}
+
+.thumbsDown:active {
+
+    color: rgb(199, 4, 4);
+
+}
+
+
+@media only screen and (max-width: 700px) {
+
+    .songInput {
+
+        margin-bottom: 3vh;
+        position: inherit;
+    }
+
+    .searchResults {
+
+        width: 91.2vw;
+        position: relative;
+        left: -11vw;
+        font-size: 3vh;
+        padding-left: 1vw;
+        border-bottom: solid 1px rgba(50, 156, 255, 0.863);
+        border-radius: 2px;
+    }
+
+    .song {
+
+        color: black;
+        background: white;
+        margin-top: 3vh;
+        border-radius: 5px;
+        font-size: 5vh;
+        white-space: nowrap;
+        width: 74%;
+        left: 7vw;
+        overflow: auto;
+        padding-top: 4vh;
+        padding-bottom: 4vh;
+    }
+    
+    .thumbsUp {
+    
+        color: white;
+        font-size: 6vh;
+        margin-top: 2vh;
+        line-height: 100%;
+        position: absolute;
+        right: 2vw;
+        top: -18vh;
+    }
+
+    .thumbsDown {
+
+        color: white;
+        font-size: 6vh;
+        margin-top: 2vh;
+        line-height: 140%;
+        position: absolute;
+        right: 2vw;
+        top: -10vh;
+    }
+}

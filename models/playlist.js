@@ -2,7 +2,8 @@ module.exports = function(sequelize, DataTypes) {
   var Playlist = sequelize.define("Playlist", {
     rank: {
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: false,
+      defaultValue: 0
     },
     song: {
       type: DataTypes.STRING,
